@@ -28,6 +28,16 @@ Type Definitions
 /**********************************************************************************************************************
 Constants / Definitions
 **********************************************************************************************************************/
+#define ACCEL_RX_BUFFER_SIZE                (u16)2
+
+/* ACCEL SPI Peripheral Allocation (USART2) */
+#define ACCEL_SPI                   SPI
+
+#define ACCEL_SPI_CS_GPIO           AT91C_BASE_PIOA
+#define ACCEL_SPI_CS_PIN            PA_16_BLADE_CS
+#define ACCEL_SPI_SCK_PIN           PA_15_BLADE_SCK        
+#define ACCEL_SPI_MOSI_PIN          PA_14_BLADE_MOSI        
+#define ACCEL_SPI_MISO_PIN          PA_13_BLADE_MISO        
 
 
 /**********************************************************************************************************************

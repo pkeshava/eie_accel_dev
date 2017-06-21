@@ -59,7 +59,8 @@ Variable names shall start with "UserApp_" and be declared as static.
 ***********************************************************************************************************************/
 static fnCode_type UserApp_StateMachine;            /* The state machine function pointer */
 static u32 UserApp_u32Timeout;                      /* Timeout counter used across states */
-static u8 rxBufferAccelXAxis[] = {0x0, 0x0};
+static u8 rxBufferAccelXAxis[ACCEL_RX_BUFFER_SIZE];
+static u8 *pu8RxBufferAccelXAxisNextChar;
 static SspPeripheralType* sspPeripheral;
 
 
@@ -96,14 +97,19 @@ void UserAppInitialize(void)
   {
     SspInitialize();
     
+    pu8RxBufferAccelXAxisNextChar = rxBufferAccelXAxis;
       
+    /* Configure the SSP resource to be used for the application */
     SspConfigurationType sspConfig;
-    sspConfig.SpiMode = SPI_MASTER;
-    sspConfig.BitOrder = MSB_FIRST;
-    
-    
-    sspConfig.pu8RxBufferAddress = &rxBufferAccelXAxis[0];
-    
+    sspConfig.SspPeripheral      = ACCEL_SPI;
+    sspConfig.pCsGpioAddress     = ACCEL_SPI_CS_GPIO;
+    sspConfig.u32CsPin           = ACCEL_SPI_CS_PIN;
+    sspConfig.SpiMode            = SPI_MASTER;
+    sspConfig.BitOrder           = MSB_FIRST;
+    sspConfig.pu8RxBufferAddress = rxBufferAccelXAxis;
+    sspConfig.ppu8RxNextByte     = &pu8RxBufferAccelXAxisNextChar;
+    sspConfig.u16RxBufferSize    = ACCEL_RX_BUFFER_SIZE;
+
     sspPeripheral = SspRequest(&sspConfig);
     
     
