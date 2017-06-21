@@ -35,7 +35,7 @@ Runs current task state.  Should only be called once in main loop.
 **********************************************************************************************************************/
 
 #include "configuration.h"
-
+#include "sam3u_ssp.h"
 /***********************************************************************************************************************
 Global variable definitions with scope across entire project.
 All Global variable names shall start with "G_"
@@ -59,6 +59,8 @@ Variable names shall start with "UserApp_" and be declared as static.
 ***********************************************************************************************************************/
 static fnCode_type UserApp_StateMachine;            /* The state machine function pointer */
 static u32 UserApp_u32Timeout;                      /* Timeout counter used across states */
+static u8 rxBufferAccelXAxis[] = {0x0, 0x0};
+static SspPeripheralType* sspPeripheral;
 
 
 /**********************************************************************************************************************
@@ -92,6 +94,19 @@ void UserAppInitialize(void)
   /* If good initialization, set state to Idle */
   if( 1 )
   {
+    SspInitialize();
+    
+      
+    SspConfigurationType sspConfig;
+    sspConfig.SpiMode = SPI_MASTER;
+    sspConfig.BitOrder = MSB_FIRST;
+    
+    
+    sspConfig.pu8RxBufferAddress = &rxBufferAccelXAxis[0];
+    
+    sspPeripheral = SspRequest(&sspConfig);
+    
+    
     UserApp_StateMachine = UserAppSM_Idle;
   }
   else
