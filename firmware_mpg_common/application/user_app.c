@@ -62,7 +62,7 @@ static u32 UserApp_u32Timeout;                      /* Timeout counter used acro
 static u8 rxBufferAccelXAxis[ACCEL_RX_BUFFER_SIZE];
 static u8 *pu8RxBufferAccelXAxisNextChar;
 static SspPeripheralType* sspPeripheral;
-
+static bool bCsState;
 
 /**********************************************************************************************************************
 Function Definitions
@@ -140,7 +140,17 @@ Promises:
 */
 void UserAppRunActiveState(void)
 {
-  UserApp_StateMachine();
+  if(bCsState)
+  {
+    AT91C_BASE_PIOB->PIO_CODR = ACCEL_SPI_CS_PIN;
+  }
+  else
+  {
+    AT91C_BASE_PIOB->PIO_SODR = ACCEL_SPI_CS_PIN;
+  }
+
+  bCsState = !bCsState;
+  //UserApp_StateMachine();
 
 } /* end UserAppRunActiveState */
 
